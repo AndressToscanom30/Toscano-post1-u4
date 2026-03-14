@@ -13,6 +13,9 @@ const leerCampo = (selector) => {
 // Referencia al contenedor de la galería
 const galeria = document.querySelector("#galeria");
 
+// Elemento contenedor de filtros (para insertar contador)
+const contenedorFiltros = document.querySelector("#filtros");
+
 function crearElementoTarjeta({ id, titulo, descripcion, categoria }) {
     // Crear el contenedor de la tarjeta
     const tarjeta = document.createElement("article");
@@ -45,6 +48,7 @@ function agregarTarjeta() {
     // Crear el elemento DOM y añadirlo a la galería
     const elemento = crearElementoTarjeta(nuevaTarjeta);
     galeria.appendChild(elemento);
+    actualizarContador();
 }
 // Registrar el evento del botón
 document.querySelector("#btn-agregar").addEventListener("click",
@@ -58,8 +62,9 @@ galeria.addEventListener("click", (e) => {
     // Eliminar del estado
     tarjetas = tarjetas.filter(t => t.id !== idEliminar);
     // Eliminar del DOM
-    const elementoTarjeta = galeria.querySelector(`[dataid="${idEliminar}"]`);
+    const elementoTarjeta = galeria.querySelector(`[data-id="${idEliminar}"]`);
     if (elementoTarjeta) elementoTarjeta.remove();
+    actualizarContador();
 });
 
 const btnsFiltro = document.querySelectorAll(".btn-filtro");
@@ -75,34 +80,41 @@ btnsFiltro.forEach(btn => {
             if (categoriaFiltro === "todas") {
                 tarjeta.classList.remove("oculta");
             } else {
-                const coincide = tarjeta.classList.contains(`categoria-
-${categoriaFiltro}`);
+                const coincide = tarjeta.classList.contains(`categoria-${categoriaFiltro}`);
                 tarjeta.classList.toggle("oculta", !coincide);
             }
         });
+        actualizarContador();
     });
 });
 
 // Actualizar el contador de tarjetas
 function actualizarContador() {
-    const visibles =
-        galeria.querySelectorAll(".tarjeta:not(.oculta)").length;
+    const visibles = galeria.querySelectorAll(".tarjeta:not(.oculta)").length;
     let contador = document.querySelector("#contador");
     if (!contador) {
         contador = document.createElement("p");
         contador.id = "contador";
-        document.querySelector("#filtros").insertAdjacentElement("afterend",
-            contador);
+        if (contenedorFiltros) contenedorFiltros.insertAdjacentElement("afterend", contador);
+        else document.body.appendChild(contador);
     }
     contador.textContent = `Mostrando ${visibles} tarjeta(s)`;
     // Mensaje de galería vacía
     const sinTarjetas = galeria.querySelectorAll(".tarjeta").length === 0;
-    galeria.innerHTML = sinTarjetas
-        ? `<p class="mensaje-vacio">No hay tarjetas. Crea la primera usando
-el formulario.</p>`
-        : galeria.innerHTML;
-    if (!sinTarjetas) {
-        const msgVacio = galeria.querySelector(".mensaje-vacio");
+    const msgVacio = galeria.querySelector(".mensaje-vacio");
+    if (sinTarjetas) {
+        if (!msgVacio) {
+            const p = document.createElement("p");
+            p.className = "mensaje-vacio";
+            p.textContent = "No hay tarjetas. Crea la primera usando el formulario.";
+            galeria.appendChild(p);
+        }
+        contador.textContent = `Mostrando 0 tarjeta(s)`;
+    } else {
         if (msgVacio) msgVacio.remove();
     }
 }
+
+// Inicializar contador
+actualizarContador();
+
