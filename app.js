@@ -50,3 +50,14 @@ function agregarTarjeta() {
 document.querySelector("#btn-agregar").addEventListener("click",
     agregarTarjeta);
 
+// Delegación: un solo listener en la galería para todos los botones
+galeria.addEventListener("click", (e) => {
+    // Verificar que el clic fue en un botón de eliminar
+    if (!e.target.matches(".btn-eliminar")) return;
+    const idEliminar = Number(e.target.dataset.id);
+    // Eliminar del estado
+    tarjetas = tarjetas.filter(t => t.id !== idEliminar);
+    // Eliminar del DOM
+    const elementoTarjeta = galeria.querySelector(`[dataid="${idEliminar}"]`);
+    if (elementoTarjeta) elementoTarjeta.remove();
+});
