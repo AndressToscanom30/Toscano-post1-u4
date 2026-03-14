@@ -82,3 +82,27 @@ ${categoriaFiltro}`);
         });
     });
 });
+
+// Actualizar el contador de tarjetas
+function actualizarContador() {
+    const visibles =
+        galeria.querySelectorAll(".tarjeta:not(.oculta)").length;
+    let contador = document.querySelector("#contador");
+    if (!contador) {
+        contador = document.createElement("p");
+        contador.id = "contador";
+        document.querySelector("#filtros").insertAdjacentElement("afterend",
+            contador);
+    }
+    contador.textContent = `Mostrando ${visibles} tarjeta(s)`;
+    // Mensaje de galería vacía
+    const sinTarjetas = galeria.querySelectorAll(".tarjeta").length === 0;
+    galeria.innerHTML = sinTarjetas
+        ? `<p class="mensaje-vacio">No hay tarjetas. Crea la primera usando
+el formulario.</p>`
+        : galeria.innerHTML;
+    if (!sinTarjetas) {
+        const msgVacio = galeria.querySelector(".mensaje-vacio");
+        if (msgVacio) msgVacio.remove();
+    }
+}
