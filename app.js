@@ -27,3 +27,26 @@ function crearElementoTarjeta({ id, titulo, descripcion, categoria }) {
  `;
     return tarjeta;
 }
+
+function agregarTarjeta() {
+    const titulo = leerCampo("#input-titulo");
+    const descripcion = leerCampo("#input-descripcion");
+    const categoria = document.querySelector("#select-categoria").value;
+    // Validación básica: los campos son obligatorios
+    if (!titulo || !descripcion) {
+        alert("El título y la descripción son obligatorios.");
+        return;
+    }
+    // Crear objeto tarjeta y agregarlo al estado
+    const nuevaTarjeta = {
+        id: generarId(), titulo, descripcion, categoria
+    };
+    tarjetas.push(nuevaTarjeta);
+    // Crear el elemento DOM y añadirlo a la galería
+    const elemento = crearElementoTarjeta(nuevaTarjeta);
+    galeria.appendChild(elemento);
+}
+// Registrar el evento del botón
+document.querySelector("#btn-agregar").addEventListener("click",
+    agregarTarjeta);
+
